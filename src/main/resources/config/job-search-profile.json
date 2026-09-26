@@ -1,0 +1,31 @@
+{
+  "targetRoles": [
+    "Développeur Java",
+    "Ingénieur Java",
+    "Développeur Backend",
+    "Backend Developer",
+    "Développeur Full Stack Java Angular",
+    "Full Stack Developer"
+  ],
+  "skills": [
+    "Java",
+    "Spring Boot",
+    "SQL",
+    "Angular"
+  ],
+  "locations": [
+    "France"
+  ],
+  "remoteAccepted": true,
+  "minimumSalary": 34000,
+  "excludedSkills": [
+    "PHP","Symphony"
+  ],
+  "excludedTitleKeywords": [
+    "expert",
+    "expérimenté",
+    "expérimentée",
+    "senior",
+    "lead"
+]
+}
