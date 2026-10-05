@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 import com.example.job_matcher.dto.JSearchJobDto;
 import com.example.job_matcher.dto.JSearchResponse;
+import com.example.job_matcher.exception.JSearchApiException;
 import com.example.job_matcher.model.Job;
 
 @Service
@@ -32,26 +34,37 @@ public class JSearchService {
         // This method searches for jobs using the query we receive.
         // For now, we just return the full JSON response as a String.
         public List<Job> searchJobs(String query) {
-        JSearchResponse response = restClient.get()
-                .uri(uriBuilder -> uriBuilder.path("/jsearch/search-v2")
-                        .queryParam("query", query)
-                        .queryParam("country", "fr")
-                        .queryParam("language", "fr")
-                        .build())
-                .retrieve()
-                .body(JSearchResponse.class);
 
-        if (response == null
-                || response.data() == null
-                || response.data().jobs() == null) {
+            JSearchResponse response;
+
+            try {
+                response = restClient.get()
+                        .uri(uriBuilder -> uriBuilder.path("/jsearch/search-v2")
+                                .queryParam("query", query)
+                                .queryParam("country", "fr")
+                                .queryParam("language", "fr")
+                                .build())
+                        .retrieve()
+                        .body(JSearchResponse.class);
+
+            } catch (RestClientException exception) {
+                throw new JSearchApiException(
+                        "JSearch API request failed",
+                        exception
+                );
+            }
+
+            if (response == null
+                    || response.data() == null
+                    || response.data().jobs() == null) {
                 return List.of();
-        }
+            }
 
-        return response.data()
-                .jobs()
-                .stream()
-                .map(this::toJob)
-                .toList();
+            return response.data()
+                    .jobs()
+                    .stream()
+                    .map(this::toJob)
+                    .toList();
         }
         
 

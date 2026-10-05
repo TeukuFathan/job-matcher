@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-
+import com.example.job_matcher.exception.GeminiInvalidResponseException;
 import com.example.job_matcher.client.GeminiClient;
 import com.example.job_matcher.dto.JobMatchResult;
 import com.example.job_matcher.model.Job;
@@ -56,7 +56,7 @@ public class JobMatchingService {
         
         private JobMatchResult parseResult(String json) {
         if (json == null || json.isBlank()) {
-                throw new IllegalStateException("Gemini returned an empty response");
+                throw new GeminiInvalidResponseException("Gemini returned an empty response");
         }
 
         JobMatchResult result;
@@ -64,7 +64,7 @@ public class JobMatchingService {
         try {
                 result = objectMapper.readValue(json, JobMatchResult.class);
         } catch (Exception exception) {
-                throw new IllegalStateException(
+                throw new GeminiInvalidResponseException(
                         "Could not parse Gemini's response",
                         exception
                 );
@@ -75,7 +75,7 @@ public class JobMatchingService {
                 || result.experienceReason() == null
                 || result.matchedTechnologies() == null
                 || result.summary() == null) {
-                throw new IllegalStateException("Gemini returned an incomplete result");
+                throw new GeminiInvalidResponseException("Gemini returned an incomplete result");
         }
 
         return result;

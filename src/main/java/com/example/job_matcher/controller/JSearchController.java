@@ -1,6 +1,7 @@
 package com.example.job_matcher.controller;
 
 import com.example.job_matcher.dto.EvaluatedJob;
+import com.example.job_matcher.exception.InvalidSearchQueryException;
 import com.example.job_matcher.service.JobEvaluationService;
 import com.example.job_matcher.service.JobSearchProfileService;
 
@@ -29,7 +30,15 @@ public class JSearchController {
             value = "/search",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    
     public List<EvaluatedJob> searchJobs(@RequestParam String query) {
+
+        if (query.isBlank()) {
+            throw new InvalidSearchQueryException(
+                    "Search query must not be blank"
+            );
+        }
+
         return jobEvaluationService.searchAndEvaluate(
                 query,
                 profileService.getProfile()
