@@ -3,6 +3,7 @@ package com.example.job_matcher.service;
 import com.example.job_matcher.dto.EvaluatedJob;
 import com.example.job_matcher.model.Job;
 import com.example.job_matcher.model.JobSearchProfile;
+import com.example.job_matcher.dto.SimplifiedJobResultDto;
 
 import org.springframework.stereotype.Service;
 
@@ -28,22 +29,33 @@ public class JobEvaluationService {
         this.jSearchService = jSearchService;
     }
 
-    public List<EvaluatedJob> evaluate(List<Job> jobs, JobSearchProfile profile) {
-        
-    List<Job> filteredJobs = jobFilterService.filter(jobs, profile);
+    public List<SimplifiedJobResultDto> evaluate(List<Job> jobs, JobSearchProfile profile) {
 
-    return filteredJobs.stream()
-            .limit(MAX_JOBS_TO_EVALUATE)
-            .map(job -> new EvaluatedJob(
-                    job,
-                    jobMatchingService.matchJobs(job)
-            ))
-            .toList();
+        List<Job> filteredJobs = jobFilterService.filter(jobs, profile);
+
+        return filteredJobs.stream()
+                .limit(MAX_JOBS_TO_EVALUATE)
+                .map(job -> new EvaluatedJob(
+                        job,
+                        jobMatchingService.matchJobs(job)
+                ))
+                .map(this::toSimplifiedJobResultDto)
+                .toList();
     }
 
 
-    public List<EvaluatedJob> searchAndEvaluate(String query,JobSearchProfile profile) {    
+    public List<SimplifiedJobResultDto> searchAndEvaluate(String query,JobSearchProfile profile) {    
         List<Job> jobs = jSearchService.searchJobs(query);
         return evaluate(jobs, profile);
     }
+
+    private SimplifiedJobResultDto toSimplifiedJobResultDto(EvaluatedJob evaluatedJob) {
+        Job job = evaluatedJob.job();
+
+        return new SimplifiedJobResultDto(
+                job.title(),
+                job.company(),
+                job.applyUrl()
+    );
+}
 }
