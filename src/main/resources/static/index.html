@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Job Search</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<main class="container">
+
+    <h1>AI Job Search</h1>
+
+    <p class="description">
+        Search for jobs matching your profile.
+        Results are pre-filtered and then evaluated by Gemini AI.
+    </p>
+
+    <div class="info">
+        Maximum 5 jobs are evaluated per search to limit AI/API usage.
+    </div>
+
+    <div class="search-bar">
+        <input
+                id="searchInput"
+                type="text"
+                placeholder="java, spring boot, angular..."
+        >
+
+        <button id="searchButton">
+            Search
+        </button>
+    </div>
+
+    <div id="jobResults"></div>
+
+</main>
+
+<script src="/app.js"></script>
+
+</body>
+</html>
